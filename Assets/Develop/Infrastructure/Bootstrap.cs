@@ -1,18 +1,35 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Bootstrap : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    private void Awake()
     {
+        CreateServices();
         
+        LoadResources();
+        
+        InitializeServices();
+        
+        StartGame();
     }
 
-    // Update is called once per frame
-    void Update()
+    private void CreateServices()
     {
-        
+
+    }
+
+    private void LoadResources()
+    {
+
+    }
+
+    private void InitializeServices()
+    {
+
+    }
+
+    private void StartGame()
+    {
+
     }
 }
