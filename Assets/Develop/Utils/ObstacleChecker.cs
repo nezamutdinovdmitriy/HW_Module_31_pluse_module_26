@@ -1,13 +1,26 @@
 using UnityEngine;
 
-public class ObstacleChecker : MonoBehaviour
+namespace Utils
 {
-    [SerializeField] private LayerMask _mask;
-    [SerializeField] private float _distanceToCheck;
+    public class ObstacleChecker : MonoBehaviour
+    {
+        private const float offsetBoundY = 0.01f; 
 
-    [SerializeField] private CapsuleCollider2D _collider;
-    [SerializeField] private Vector2 _direction;
+        [SerializeField] private LayerMask _mask;
+        [SerializeField] private float _distanceToCheck;
 
-    public bool IsTouches() 
-        => Physics2D.CapsuleCast(_collider.bounds.center, _collider.size, _collider.direction, 0, _direction, _distanceToCheck, _mask).collider != null;
+        [SerializeField] private CapsuleCollider2D _collider;
+        [SerializeField] private Vector2 _direction;
+
+        public bool IsTouches()
+        {
+            Bounds bounds = _collider.bounds;
+
+            Vector2 origin = new Vector2(bounds.center.x, bounds.min.y + offsetBoundY);
+
+            Vector2 size = new Vector2(bounds.size.x * 0.9f, offsetBoundY * 2f);
+
+            return Physics2D.CapsuleCast(origin, size, CapsuleDirection2D.Horizontal, 0, _direction, _distanceToCheck, _mask).collider != null;
+        }  
+    }
 }
