@@ -14,14 +14,16 @@ namespace Movement
         private readonly Vector2 _wallJumpForce;
         private readonly float _wallJumpDuration;
 
-        private float _wallJumpSpeed;
+        private float _wallJumpTimer;
+
+        public bool IsInputLocked => _wallJumpTimer > 0;
 
         public Jumper(
-            Rigidbody2D rigidbody, 
-            float jumpForce, 
-            float gravityModifier,          
-            float wallSlideSpeed, 
-            Vector2 wallJumpForce, 
+            Rigidbody2D rigidbody,
+            float jumpForce,
+            float gravityModifier,
+            float wallSlideSpeed,
+            Vector2 wallJumpForce,
             float wallJumpDuration)
         {
             _rigidbody = rigidbody;
@@ -44,9 +46,10 @@ namespace Movement
             _rigidbody.velocity = velocity;
         }
 
-        public void Update(bool isJumpPressed, EnvironmentSensor sensor, float deltaTime, out bool wasWallJump)
+        public void Update(bool isJumpPressed, EnvironmentSensor sensor, Rotator rotator, float deltaTime)
         {
-            wasWallJump = false;
+            if (_wallJumpTimer > 0)
+                _wallJumpTimer -= deltaTime;
 
             bool isGrounded = sensor.IsGrounded;
             bool isTouchingWall = sensor.IsTouchingWall(out int wallDirection);
@@ -59,15 +62,20 @@ namespace Movement
             if (isJumpPressed)
             {
                 if (isGrounded)
+                {
                     ApplyYVelocity(_jumpForce);
+                }
                 else if (isTouchingWall)
                 {
                     _rigidbody.velocity = new Vector2(-wallDirection * _wallJumpForce.x, _wallJumpForce.y);
-                    wasWallJump = true;
+                    _wallJumpTimer = _wallJumpDuration;
+
+                    rotator.SetInputDirection(new Vector2(_rigidbody.velocity.x, 0));
+                    rotator.Update();
                 }
             }
 
-            if(sensor.IsCeiling)
+            if (sensor.IsCeiling)
                 StopVerticalVelocity();
         }
 

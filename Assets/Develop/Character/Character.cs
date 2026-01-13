@@ -34,8 +34,6 @@ namespace Characters
 
         private EnvironmentSensor _sensor;
 
-        private float _wallJumpTimer;
-
         public Vector2 Velocity => _rigidbody.velocity;
         public bool IsSlideWall => _sensor.IsTouchingWall(out int direction);
         public bool IsGrounded => _sensor.IsGrounded;
@@ -60,25 +58,14 @@ namespace Characters
             _jumpController.Update(Time.deltaTime);
             _movementController.Update(Time.deltaTime);
 
-            if (_wallJumpTimer <= 0)
+            _jumper.Update(_jumpController.IsJumpPressed, _sensor, _rotator, Time.deltaTime);
+
+            if (_jumper.IsInputLocked == false)
             {
                 _mover.SetInputDirection(_movementController.InputDirection);
                 _rotator.SetInputDirection(_movementController.InputDirection);
 
                 _mover.Update();
-                _rotator.Update();
-            }
-            else
-            {
-                _wallJumpTimer -= Time.deltaTime;
-            }
-
-            _jumper.Update(_jumpController.IsJumpPressed, _sensor, Time.deltaTime, out bool wasWallJump);
-
-            if (wasWallJump)
-            {
-                _wallJumpTimer = _wallJumpDuration;
-                _rotator.SetInputDirection(new Vector2(_rigidbody.velocity.x, 0));
                 _rotator.Update();
             }
 
