@@ -4,7 +4,8 @@ namespace Utils
 {
     public class ObstacleChecker : MonoBehaviour
     {
-        private const float offsetBoundY = 0.01f; 
+        private const float GroundContactOffset = 0.01f; 
+        private const float GroundProbeWidthFactor = 0.9f; 
 
         [SerializeField] private LayerMask _mask;
         [SerializeField] private float _distanceToCheck;
@@ -12,15 +13,20 @@ namespace Utils
         [SerializeField] private CapsuleCollider2D _collider;
         [SerializeField] private Vector2 _direction;
 
+        private Vector2 _origin;
+        private Vector2 _size;
+
         public bool IsTouches()
         {
             Bounds bounds = _collider.bounds;
 
-            Vector2 origin = new Vector2(bounds.center.x, bounds.min.y + offsetBoundY);
+            _origin.x = bounds.center.x;
+            _origin.y = bounds.min.y + GroundContactOffset;
 
-            Vector2 size = new Vector2(bounds.size.x * 0.9f, offsetBoundY * 2f);
+            _size.x = bounds.size.x * GroundProbeWidthFactor;
+            _size.y = GroundContactOffset * 2f;
 
-            return Physics2D.CapsuleCast(origin, size, CapsuleDirection2D.Horizontal, 0, _direction, _distanceToCheck, _mask).collider != null;
+            return Physics2D.CapsuleCast(_origin, _size, CapsuleDirection2D.Horizontal, 0, _direction, _distanceToCheck, _mask).collider != null;
         }  
     }
 }

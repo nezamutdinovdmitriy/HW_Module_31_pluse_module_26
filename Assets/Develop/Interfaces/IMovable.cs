@@ -4,9 +4,8 @@ namespace Interface
 {
     public interface IMovable
     {
-        public float CurrentHorizontalVelocity { get; }
-
-        public bool IsGrounded();
+        public float MoveSpeed { get; }
+        public Vector2 CurrentVelocity { get; }
     }
 }
 

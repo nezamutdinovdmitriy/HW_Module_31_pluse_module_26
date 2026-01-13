@@ -1,12 +1,12 @@
 using Interface;
-using Unity.VisualScripting;
 using UnityEngine;
+using Utils;
 
 namespace Characters
 {
     public class JumpView : MonoBehaviour, IInitializable
     {
-        private readonly int _velocityYKey = Animator.StringToHash("VelocityY");
+        private readonly int _isGroundedKey = Animator.StringToHash("IsGrounded");
 
         [SerializeField] private Animator _animator;
 
@@ -26,7 +26,7 @@ namespace Characters
             if (_isInit == false)
                 return;
 
-            _animator.SetFloat(_velocityYKey, _jumper.CurrentVerticalVelocity);
+            _animator.SetBool(_isGroundedKey, _jumper.IsGrounded());
         }
     }
 }

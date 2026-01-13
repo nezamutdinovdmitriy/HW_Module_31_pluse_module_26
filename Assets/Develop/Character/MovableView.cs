@@ -7,7 +7,6 @@ namespace Characters
     public class MovableView : MonoBehaviour, IInitializable
     {
         private readonly int _velocityXKey = Animator.StringToHash("VelocityX");
-        private readonly int _isGroundedKey = Animator.StringToHash("IsGrounded");
 
         [SerializeField] private Animator _animator;
 
@@ -27,8 +26,7 @@ namespace Characters
             if (_isInit == false)
                 return;
 
-            _animator.SetFloat(_velocityXKey, Mathf.Abs(_movable.CurrentHorizontalVelocity));
-            _animator.SetBool(_isGroundedKey, _movable.IsGrounded());
+            _animator.SetFloat(_velocityXKey, Mathf.Abs(_movable.CurrentVelocity.x));
         }
     }
 }

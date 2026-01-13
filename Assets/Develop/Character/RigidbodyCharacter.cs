@@ -14,42 +14,39 @@ namespace Characters
         [SerializeField] private ObstacleChecker _groundChecker;
         [SerializeField] private ObstacleChecker _ceilChecker;
 
-        public float CurrentHorizontalVelocity => _rigidbody.velocity.x;
-        public float CurrentVerticalVelocity => _rigidbody.velocity.y;
+        private DirectionalMover _mover;
+        private DirectionalRotator _rotator;
 
+        public Transform Transform => transform;
+        
         public float MoveSpeed => _moveSpeed;
         public float JumpForce => _jumpForce;
-
-        public ObstacleChecker GroundChecker => _groundChecker;
-        public ObstacleChecker CeilChecker => _ceilChecker;
-
-        private Quaternion TurnRight => Quaternion.identity;
-        private Quaternion TurnLeft => Quaternion.Euler(0, 180, 0);
+        public Vector2 CurrentVelocity => _rigidbody.velocity;
 
         public void Initialize()
         {
+            _mover = new DirectionalMover(_rigidbody, _moveSpeed);
+            _rotator = new DirectionalRotator(transform);
+
             foreach (IInitializable initializable in GetComponentsInChildren<IInitializable>())
                 initializable.Initialize();
         }
 
-        private void Update()
-        {
-            transform.rotation = GetRotationFrom(_rigidbody.velocity);
-        }
-
-        public Quaternion GetRotationFrom(Vector2 velocity)
-        {
-            if (velocity.x > 0)
-                return TurnRight;
-
-            if (velocity.x < 0)
-                return TurnLeft;
-
-            return transform.rotation;
-        }
-
         public bool IsGrounded() => _groundChecker.IsTouches();
         public bool IsCeilinged() => _ceilChecker.IsTouches();
+
+        private void Update()
+        {
+            float xInput = Input.GetAxisRaw("Horizontal");
+
+            _rigidbody.velocity = new Vector2(xInput, CurrentVelocity.y);
+
+            _mover.SetInputDirection(CurrentVelocity);
+            _rotator.SetInputDirection(CurrentVelocity);
+
+            _mover.Update(Time.deltaTime);
+            _rotator.Update(Time.deltaTime);
+        }
     }
 }
 

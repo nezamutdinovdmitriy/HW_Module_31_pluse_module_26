@@ -4,6 +4,6 @@ namespace Interface
 {
     public interface IRotatable
     {
-        public Quaternion GetRotationFrom(Vector2 velocity);
+        public Transform Transform { get; }
     }
 }

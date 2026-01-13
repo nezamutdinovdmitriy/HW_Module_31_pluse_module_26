@@ -40,19 +40,19 @@ namespace Controllers
 
         private void HandleCeil()
         {
-            if (_character.CeilChecker.IsTouches())
+            if (_character.IsCeilinged())
                 _velocity.y = Mathf.Min(0, _velocity.y);
         }
 
         private void HandleJump()
         {
-            if (_jumpPressed && _character.GroundChecker.IsTouches())
+            if (_jumpPressed && _character.IsGrounded())
                 _velocity.y = _character.JumpForce;
         }
 
         private void HandleGravity(float deltaTime)
         {
-            if (_character.GroundChecker.IsTouches() && _velocity.y <= 0)
+            if (_character.IsGrounded() && _velocity.y <= 0)
                 _velocity.y = 0;
             else
                 _velocity.y -= _gravityModifier * deltaTime;
