@@ -212,12 +212,12 @@ AnimatorStateMachine:
   - {fileID: -5278099199617340614}
   m_EntryTransitions: []
   m_StateMachineTransitions:
-  - first: {fileID: 780031188626540292}
-    second:
-    - {fileID: 6726261118298680320}
   - first: {fileID: 5388002469785672613}
     second:
     - {fileID: -5477015703192284870}
+  - first: {fileID: 780031188626540292}
+    second:
+    - {fileID: 6726261118298680320}
   m_StateMachineBehaviours: []
   m_AnyStatePosition: {x: 50, y: -190, z: 0}
   m_EntryPosition: {x: -370, y: 10, z: 0}
@@ -240,12 +240,6 @@ AnimatorController:
     m_DefaultBool: 0
     m_Controller: {fileID: 0}
   - m_Name: VelocityX
-    m_Type: 1
-    m_DefaultFloat: 0
-    m_DefaultInt: 0
-    m_DefaultBool: 0
-    m_Controller: {fileID: 0}
-  - m_Name: VelocityY
     m_Type: 1
     m_DefaultFloat: 0
     m_DefaultInt: 0

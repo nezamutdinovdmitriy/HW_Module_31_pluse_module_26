@@ -237,7 +237,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _rigidbody: {fileID: 16439298}
   _moveSpeed: 8
+  _acceleration: 1000
   _jumpForce: 25
+  _gravityModifier: 80
   _groundChecker: {fileID: 1375876400}
   _ceilChecker: {fileID: 1012480940}
 --- !u!1 &148297799
@@ -521,7 +523,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 93e2f35c7f75cbc4d9490da04ea7f126, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _character: {fileID: 16439302}
 --- !u!4 &352747605
 Transform:
   m_ObjectHideFlags: 0
@@ -966,6 +967,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _animator: {fileID: 453204114}
+  _isInit: 0
 --- !u!114 &453204116
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -979,6 +981,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _animator: {fileID: 453204114}
+  _isInit: 0
 --- !u!1 &467017819
 GameObject:
   m_ObjectHideFlags: 0
