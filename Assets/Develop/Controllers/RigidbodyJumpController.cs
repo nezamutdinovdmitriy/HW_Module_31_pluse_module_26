@@ -7,18 +7,17 @@ namespace Controllers
     {
         private readonly RigidbodyCharacter _character;
         private readonly Rigidbody2D _rigidbody;
-        private readonly float _gravityModifier;
+
 
         private bool _jumpPressed;
 
         private Vector2 _velocity;
 
-        public RigidbodyJumpController(RigidbodyCharacter character, float gravityModifier)
+        public RigidbodyJumpController(RigidbodyCharacter character)
         {
             _character = character;
 
             _rigidbody = character.GetComponent<Rigidbody2D>();
-            _gravityModifier = gravityModifier;
         }
 
         protected override void UpdateLogic(float deltaTime)
@@ -29,13 +28,11 @@ namespace Controllers
 
             _velocity = currentVelocity;
 
-            HandleGravity(deltaTime);
-
             HandleJump();
 
             HandleCeil();
 
-            _rigidbody.velocity = _velocity;
+            //_character.Velocity = _velocity;
         }
 
         private void HandleCeil()
@@ -48,14 +45,6 @@ namespace Controllers
         {
             if (_jumpPressed && _character.IsGrounded())
                 _velocity.y = _character.JumpForce;
-        }
-
-        private void HandleGravity(float deltaTime)
-        {
-            if (_character.IsGrounded() && _velocity.y <= 0)
-                _velocity.y = 0;
-            else
-                _velocity.y -= _gravityModifier * deltaTime;
         }
     }
 }

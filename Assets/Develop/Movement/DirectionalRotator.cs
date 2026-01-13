@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class DirectionalRotator
 {
-    private Transform _transform;
+    private readonly Transform _transform;
     private Vector2 _currentDirection;
 
     public DirectionalRotator(Transform transform)
@@ -17,7 +17,7 @@ public class DirectionalRotator
 
     public void SetInputDirection(Vector2 direction) => _currentDirection = direction;
 
-    public void Update(float deltaTime)
+    public void Update()
     {
         _transform.rotation = GetRotationFrom(_currentDirection);
     }

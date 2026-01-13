@@ -2,12 +2,12 @@ using UnityEngine;
 
 public class DirectionalMover
 {
-    private Rigidbody2D _rigidbody;
-    private float _moveSpeed;
+    private readonly Rigidbody2D _rigidbody;
+    private readonly float _moveSpeed;
 
     private Vector2 _currentDirection;
 
-    public DirectionalMover(Rigidbody2D rigidbody, float moveSpeed)
+    public DirectionalMover(Rigidbody2D rigidbody, float moveSpeed, float acceleration)
     {
         _rigidbody = rigidbody;
         _moveSpeed = moveSpeed;
@@ -18,7 +18,7 @@ public class DirectionalMover
 
     public void SetInputDirection(Vector2 direction) => _currentDirection = direction;
 
-    public void Update(float deltaTime)
+    public void Update()
     {
         HorizontalVelocity = _currentDirection.x * _moveSpeed;
 

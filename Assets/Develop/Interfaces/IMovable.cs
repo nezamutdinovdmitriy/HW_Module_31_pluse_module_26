@@ -5,7 +5,7 @@ namespace Interface
     public interface IMovable
     {
         public float MoveSpeed { get; }
-        public Vector2 CurrentVelocity { get; }
+        public Vector2 Velocity { get; }
     }
 }
 

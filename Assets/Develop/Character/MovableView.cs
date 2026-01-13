@@ -26,7 +26,7 @@ namespace Characters
             if (_isInit == false)
                 return;
 
-            _animator.SetFloat(_velocityXKey, Mathf.Abs(_movable.CurrentVelocity.x));
+            _animator.SetFloat(_velocityXKey, Mathf.Abs(_movable.Velocity.x));
         }
     }
 }
