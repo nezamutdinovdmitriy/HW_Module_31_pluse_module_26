@@ -14,10 +14,8 @@ namespace Characters
         private void Update()
         {
             _animator.SetFloat(_velocityXKey, Mathf.Abs(_character.Velocity.x));
-            _animator.SetBool(_isGroundedKey, _character.IsGrounded());
+            _animator.SetBool(_isGroundedKey, _character.IsGrounded);
             _animator.SetBool(_isWallSlideKey, _character.IsSlideWall);
-
-            Debug.Log(_character.IsSlideWall);
         }
     }
 }

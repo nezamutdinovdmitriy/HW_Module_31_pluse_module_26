@@ -1,12 +1,13 @@
+using Controllers;
+using Movement;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using Utils;
 
 namespace Characters
 {
     public class Character : MonoBehaviour
     {
-        private const string HorizontalAxisName = "Horizontal";
-
         [SerializeField] private Rigidbody2D _rigidbody;
 
         [SerializeField] private ObstacleChecker _groundChecker;
@@ -24,123 +25,75 @@ namespace Characters
 
         [SerializeField] private PolygonCollider2D _levelBounds;
 
-        private Vector2 _velocity;
-        private bool _jumpPressed;
+        private Mover _mover;
+        private Rotator _rotator;
+        private Jumper _jumper;
+
+        private PlayerJumpController _jumpController;
+        private PlayerMovementController _movementController;
+
+        private EnvironmentSensor _sensor;
+
         private float _wallJumpTimer;
 
         public Vector2 Velocity => _rigidbody.velocity;
-        public bool IsSlideWall => IsTouchingWall(out int wallDirection);
+        public bool IsSlideWall => _sensor.IsTouchingWall(out int direction);
+        public bool IsGrounded => _sensor.IsGrounded;
 
-        private Quaternion TurnRight => Quaternion.identity;
-        private Quaternion TurnLeft => Quaternion.Euler(0, 180, 0);
+        private void Awake()
+        {
+            _mover = new Mover(_rigidbody, _moveSpeed);
+            _rotator = new Rotator(transform);
+            _jumper = new Jumper(_rigidbody, _yVelocityForJump, _gravityModifier, _wallSlideSpeed, _wallJumpForce, _wallJumpDuration);
+
+            _sensor = new EnvironmentSensor(_groundChecker, _ceilChecker, _leftWallChecker, _rightWallChecker);
+
+            _jumpController = new PlayerJumpController();
+            _movementController = new PlayerMovementController();
+
+            _jumpController.Enable();
+            _movementController.Enable();
+        }
 
         private void Update()
         {
-            if (_wallJumpTimer > 0)
-                _wallJumpTimer -= Time.deltaTime;
-
-            float xInput = Input.GetAxisRaw(HorizontalAxisName);
-            _jumpPressed = Input.GetKeyDown(KeyCode.Space);
+            _jumpController.Update(Time.deltaTime);
+            _movementController.Update(Time.deltaTime);
 
             if (_wallJumpTimer <= 0)
-                _velocity.x = _moveSpeed * xInput;
+            {
+                _mover.SetInputDirection(_movementController.InputDirection);
+                _rotator.SetInputDirection(_movementController.InputDirection);
 
-            HandleGravity();
-            HandleWallSlide();
-            HandleJump();
-            HandleCeil();
+                _mover.Update();
+                _rotator.Update();
+            }
+            else
+            {
+                _wallJumpTimer -= Time.deltaTime;
+            }
 
-            _rigidbody.velocity = _velocity;
+            _jumper.Update(_jumpController.IsJumpPressed, _sensor, Time.deltaTime, out bool wasWallJump);
 
-            if (_wallJumpTimer <= 0 && Mathf.Abs(_velocity.x) > 0.01f)
-                transform.rotation = GetRotationFrom(_velocity);
+            if (wasWallJump)
+            {
+                _wallJumpTimer = _wallJumpDuration;
+                _rotator.SetInputDirection(new Vector2(_rigidbody.velocity.x, 0));
+                _rotator.Update();
+            }
 
             CheckFall();
         }
-
-        public bool IsGrounded() => _groundChecker.IsTouches();
 
         private void CheckFall()
         {
             if (_levelBounds.OverlapPoint(transform.position) == false)
             {
                 Debug.Log("Defeat!");
+
+                int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
+                SceneManager.LoadScene(currentSceneIndex);
             }
-        }
-
-        private void HandleWallSlide()
-        {
-            if (IsGrounded() == false && IsTouchingWall(out _) && _velocity.y < 0)
-            {
-                _velocity.y = Mathf.Max(_velocity.y, -_wallSlideSpeed);
-            }
-        }
-
-        private void HandleCeil()
-        {
-            if (_ceilChecker.IsTouches())
-                _velocity.y = Mathf.Min(0, _velocity.y);
-        }
-
-        private void HandleJump()
-        {
-            if (_jumpPressed == false)
-                return;
-
-            if (IsGrounded())
-            {
-                _velocity.y = _yVelocityForJump;
-            }
-            else if (IsTouchingWall(out int wallDirection))
-            {
-                _wallJumpTimer = _wallJumpDuration;
-                _velocity.x = -wallDirection * _wallJumpForce.x;
-                _velocity.y = _wallJumpForce.y;
-
-                transform.rotation = _velocity.x > 0 ? TurnRight : TurnLeft;
-            }
-
-            if (_jumpPressed && _groundChecker.IsTouches())
-            {
-                _velocity.y = _yVelocityForJump;
-            }
-        }
-
-        private bool IsTouchingWall(out int wallDirection)
-        {
-            if (_rightWallChecker.IsTouches())
-            {
-                wallDirection = 1;
-                return true;
-            }
-            if (_leftWallChecker.IsTouches())
-            {
-                wallDirection = -1;
-                return true;
-            }
-
-            wallDirection = 0;
-            return false;
-        }
-
-        private void HandleGravity()
-        {
-            if (_groundChecker.IsTouches() && _velocity.y <= 0)
-                _velocity.y = 0;
-            else
-                _velocity.y -= _gravityModifier * Time.deltaTime;
-        }
-
-        private Quaternion GetRotationFrom(Vector2 velocity)
-        {
-            if (velocity.x > 0)
-                return TurnRight;
-
-            if (velocity.x < 0)
-                return TurnLeft;
-
-            return transform.rotation;
         }
     }
 }
-
