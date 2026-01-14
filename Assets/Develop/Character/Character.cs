@@ -1,12 +1,11 @@
-using Controllers;
+using Interfaces;
 using Movement;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using Utils;
 
 namespace Characters
 {
-    public class Character : MonoBehaviour
+    public class Character : MonoBehaviour, IMovable, IJumpable
     {
         [SerializeField] private Rigidbody2D _rigidbody;
 
@@ -23,64 +22,37 @@ namespace Characters
         [SerializeField] private Vector2 _wallJumpForce = new Vector2(10f, 12f);
         [SerializeField] private float _wallJumpDuration = 0.2f;
 
-        [SerializeField] private PolygonCollider2D _levelBounds;
-
         private Mover _mover;
         private Rotator _rotator;
         private Jumper _jumper;
-
-        private PlayerJumpController _jumpController;
-        private PlayerMovementController _movementController;
-
         private EnvironmentSensor _sensor;
 
         public Vector2 Velocity => _rigidbody.velocity;
         public bool IsSlideWall => _sensor.IsTouchingWall(out int direction);
         public bool IsGrounded => _sensor.IsGrounded;
+        public bool IsInputLocked => _jumper.IsInputLocked;
 
         private void Awake()
         {
             _mover = new Mover(_rigidbody, _moveSpeed);
             _rotator = new Rotator(transform);
             _jumper = new Jumper(_rigidbody, _yVelocityForJump, _gravityModifier, _wallSlideSpeed, _wallJumpForce, _wallJumpDuration);
-
             _sensor = new EnvironmentSensor(_groundChecker, _ceilChecker, _leftWallChecker, _rightWallChecker);
-
-            _jumpController = new PlayerJumpController();
-            _movementController = new PlayerMovementController();
-
-            _jumpController.Enable();
-            _movementController.Enable();
         }
 
         private void Update()
         {
-            _jumpController.Update(Time.deltaTime);
-            _movementController.Update(Time.deltaTime);
-
-            _jumper.Update(_jumpController.IsJumpPressed, _sensor, _rotator, Time.deltaTime);
-
-            if (_jumper.IsInputLocked == false)
-            {
-                _mover.SetInputDirection(_movementController.InputDirection);
-                _rotator.SetInputDirection(_movementController.InputDirection);
-
-                _mover.Update();
-                _rotator.Update();
-            }
-
-            CheckFall();
+            _jumper.Update(_sensor, Time.deltaTime);
+            _mover.Update(IsInputLocked);
+            _rotator.Update();
         }
 
-        private void CheckFall()
+        public void Move(Vector2 direction)
         {
-            if (_levelBounds.OverlapPoint(transform.position) == false)
-            {
-                Debug.Log("Defeat!");
-
-                int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
-                SceneManager.LoadScene(currentSceneIndex);
-            }
+            _mover.SetInputDirection(direction);
+            _rotator.SetInputDirection(direction);
         }
+
+        public void Jump() => _jumper.Jump(_sensor, _rotator);
     }
 }

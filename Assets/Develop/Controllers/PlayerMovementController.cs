@@ -1,17 +1,25 @@
 using UnityEngine;
+using Interfaces;
 
 namespace Controllers
 {
     public class PlayerMovementController : Controller
     {
         private const string HorizontalAxisName = "Horizontal";
+        private IMovable _movable;
 
-        public Vector2 InputDirection { get; private set; }
+        public PlayerMovementController(IMovable movable)
+        {
+            _movable = movable;
+        }
 
         protected override void UpdateLogic(float deltaTime)
         {
-            float xInput = Input.GetAxisRaw(HorizontalAxisName);
-            InputDirection = new Vector2(xInput, 0);
+            if(_movable.IsInputLocked == false)
+            {
+                float xInput = Input.GetAxisRaw(HorizontalAxisName);
+                _movable.Move(new Vector2(xInput, 0));
+            }
         }
     }
 }

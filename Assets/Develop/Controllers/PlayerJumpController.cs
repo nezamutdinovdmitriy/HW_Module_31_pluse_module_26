@@ -1,4 +1,5 @@
 using UnityEngine;
+using Interfaces;
 
 namespace Controllers
 {
@@ -6,11 +7,17 @@ namespace Controllers
     {        
         private const KeyCode JumpKey = KeyCode.Space;
 
-        public bool IsJumpPressed { get; private set; }
+        private IJumpable _jumpable;
+
+        public PlayerJumpController(IJumpable jumpable)
+        {
+            _jumpable = jumpable;
+        }
 
         protected override void UpdateLogic(float deltaTime)
         {
-            IsJumpPressed = Input.GetKeyDown(JumpKey);
+            if (Input.GetKeyDown(JumpKey))
+                _jumpable.Jump();
         }
     }
 }

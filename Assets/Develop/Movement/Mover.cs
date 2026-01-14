@@ -19,8 +19,11 @@ namespace Movement
 
         public void SetInputDirection(Vector2 horizontalInput) => _currentDirection = horizontalInput;
 
-        public void Update()
+        public void Update(bool isInputLocked)
         {
+            if (isInputLocked)
+                return;
+
             Vector2 velocity = _rigidbody.velocity;
 
             velocity.x = _currentDirection.x * _moveSpeed;

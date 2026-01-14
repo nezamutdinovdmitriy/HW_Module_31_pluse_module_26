@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 using Utils;
 
@@ -34,65 +33,49 @@ namespace Movement
             _wallJumpDuration = wallJumpDuration;
         }
 
-        public void ApplyGravity(bool isGrounded, float deltaTime)
+        public void Update(EnvironmentSensor sensor, float deltaTime)
         {
-            Vector2 velocity = _rigidbody.velocity;
-
-            if (isGrounded && velocity.y <= 0)
-                velocity.y = 0;
-            else
-                velocity.y -= _gravityModifier * deltaTime;
-
-            _rigidbody.velocity = velocity;
-        }
-
-        public void Update(bool isJumpPressed, EnvironmentSensor sensor, Rotator rotator, float deltaTime)
-        {
-            if (_wallJumpTimer > 0)
+            if(_wallJumpTimer > 0)
                 _wallJumpTimer -= deltaTime;
 
             bool isGrounded = sensor.IsGrounded;
             bool isTouchingWall = sensor.IsTouchingWall(out int wallDirection);
+            Vector2 velocity = _rigidbody.velocity;
 
-            ApplyGravity(isGrounded, deltaTime);
+            if (isGrounded == false || velocity.y > 0.01f)
+                velocity.y -= _gravityModifier * deltaTime;
+            else if(isGrounded && velocity.y < 0)
+                velocity.y = 0;
 
-            if (isGrounded == false && isTouchingWall && _rigidbody.velocity.y < 0)
-                ApplyYVelocity(Mathf.Max(_rigidbody.velocity.y, -_wallSlideSpeed));
+            if (isGrounded == false && isTouchingWall && velocity.y < 0)
+                velocity.y = Mathf.Max(velocity.y, -_wallSlideSpeed);
 
-            if (isJumpPressed)
-            {
-                if (isGrounded)
-                {
-                    ApplyYVelocity(_jumpForce);
-                }
-                else if (isTouchingWall)
-                {
-                    _rigidbody.velocity = new Vector2(-wallDirection * _wallJumpForce.x, _wallJumpForce.y);
-                    _wallJumpTimer = _wallJumpDuration;
+            if(sensor.IsCeiling && velocity.y > 0)
+                velocity.y = 0;
 
-                    rotator.SetInputDirection(new Vector2(_rigidbody.velocity.x, 0));
-                    rotator.Update();
-                }
-            }
-
-            if (sensor.IsCeiling)
-                StopVerticalVelocity();
+            _rigidbody.velocity = velocity;
         }
 
-        public void HandleWallSlide(bool isGrounded, bool isTouchingWall)
+        public void Jump(EnvironmentSensor sensor, Rotator rotator)
         {
-            if (isGrounded == false && isTouchingWall && _rigidbody.velocity.y < 0)
-                ApplyYVelocity(Mathf.Max(_rigidbody.velocity.y, -_wallSlideSpeed));
-        }
+            if (sensor.IsGrounded)
+            {
+                ApplyYVelocity(_jumpForce);
+            }
+            else if(sensor.IsTouchingWall(out int wallDirection))
+            {
+                _rigidbody.velocity = new Vector2(-wallDirection * _wallJumpForce.x, _wallJumpForce.y);
+                _wallJumpTimer = _wallJumpDuration;
 
-        public void StopVerticalVelocity() => ApplyYVelocity(Mathf.Min(0, _rigidbody.velocity.y));
+                rotator.SetInputDirection(new Vector2(_rigidbody.velocity.x, 0));
+                rotator.Update();
+            }
+        }
 
         private void ApplyYVelocity(float yValue)
         {
             Vector2 velocity = _rigidbody.velocity;
-
             velocity.y = yValue;
-
             _rigidbody.velocity = velocity;
         }
     }
