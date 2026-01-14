@@ -1,26 +1,31 @@
 using Characters;
 using UnityEngine;
 using Controllers;
+using Factories;
+using Utils;
 
 public class Bootstrap : MonoBehaviour
 {
     [SerializeField] private Character _character;
 
-    private PlayerMovementController _movementController;
-    private PlayerJumpController _jumpController;
+    private ControllersFactory _controllersFactory;
+
+    private ControllerUpdateService _controllerUpdateService;
 
     private void Awake()
     {
-        _movementController = new PlayerMovementController(_character);
-        _jumpController = new PlayerJumpController(_character);
+        _controllersFactory = new ControllersFactory();
+        _controllerUpdateService = new ControllerUpdateService();
 
-        _movementController.Enable();
-        _jumpController.Enable();
+        CompositeController mainHeroController = _controllersFactory.CreateMainHeroController(_character, _character);
+
+        mainHeroController.Enable();
+
+        _controllerUpdateService.Add(mainHeroController);
     }
 
     private void Update()
     {
-        _movementController.Update(Time.deltaTime);
-        _jumpController.Update(Time.deltaTime);
+        _controllerUpdateService?.Update(Time.deltaTime);
     }
 }
