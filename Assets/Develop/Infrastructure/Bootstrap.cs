@@ -1,37 +1,40 @@
 using Develop.Characters;
 using Develop.Controllers;
 using Develop.Factories;
-using UnityEngine;
 using Develop.Utils;
+using UnityEngine;
 
-public class Bootstrap : MonoBehaviour
+namespace Develop.Infrastructure
 {
-    [SerializeField] private Character _character;
-    [SerializeField] private Character _enemy;
-    [SerializeField] private Transform[] _patrolPoints;
-
-    private ControllersFactory _controllersFactory;
-
-    private ControllerUpdateService _controllerUpdateService;
-
-    private void Awake()
+    public class Bootstrap : MonoBehaviour
     {
-        _controllersFactory = new ControllersFactory();
-        _controllerUpdateService = new ControllerUpdateService();
+        [SerializeField] private Character _character;
+        [SerializeField] private Character _enemy;
+        [SerializeField] private Transform[] _patrolPoints;
 
-        CompositeController mainHeroController = _controllersFactory.CreateMainHeroController(_character, _character);
+        private ControllersFactory _controllersFactory;
 
-        PatrolController patrolController = new PatrolController(_enemy, 0.5f, _patrolPoints);
+        private ControllerUpdateService _controllerUpdateService;
 
-        mainHeroController.Enable();
-        patrolController.Enable();
+        private void Awake()
+        {
+            _controllersFactory = new ControllersFactory();
+            _controllerUpdateService = new ControllerUpdateService();
 
-        _controllerUpdateService.Add(mainHeroController);
-        _controllerUpdateService.Add(patrolController);
-    }
+            CompositeController mainHeroController = _controllersFactory.CreateMainHeroController(_character, _character);
 
-    private void Update()
-    {
-        _controllerUpdateService?.Update(Time.deltaTime);
+            PatrolController patrolController = new PatrolController(_enemy, 0.5f, _patrolPoints);
+
+            mainHeroController.Enable();
+            patrolController.Enable();
+
+            _controllerUpdateService.Add(mainHeroController);
+            _controllerUpdateService.Add(patrolController);
+        }
+
+        private void Update()
+        {
+            _controllerUpdateService?.Update(Time.deltaTime);
+        }
     }
 }
