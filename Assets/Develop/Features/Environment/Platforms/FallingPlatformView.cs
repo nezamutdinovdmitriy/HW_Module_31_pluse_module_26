@@ -26,15 +26,11 @@ namespace Develop.Features.Environment
         private void OnEnable()
         {
             _platform.StabilityChanged += OnStabilityChanged;
-            _platform.Collapsed += OnCollapsed;
         }
         private void OnDisable()
         {
             _platform.StabilityChanged -= OnStabilityChanged;
-            _platform.Collapsed -= OnCollapsed;
         }
-
-        private void OnCollapsed() => transform.localPosition = _originalPosition;
 
         private void OnStabilityChanged(float progress)
         {

@@ -6,7 +6,6 @@ namespace Develop.Features.Environment
 {
     public class FallingPlatform : MonoBehaviour
     {
-        public event Action Collapsed;
         public event Action<float> StabilityChanged;
 
         [SerializeField] private float _maxStability = 100f;
@@ -34,10 +33,7 @@ namespace Develop.Features.Environment
                 StabilityChanged?.Invoke(progress);
 
                 if(_currentStability <= 0)
-                {
-                    Collapsed?.Invoke();
                     Destroy(gameObject);
-                }
             }
         }
     }
