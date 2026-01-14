@@ -40,6 +40,7 @@ namespace Develop.Movement
 
             bool isGrounded = sensor.IsGrounded;
             bool isTouchingWall = sensor.IsTouchingWall(out int wallDirection);
+            
             Vector2 velocity = _rigidbody.velocity;
 
             if (isGrounded == false || velocity.y > 0.01f)

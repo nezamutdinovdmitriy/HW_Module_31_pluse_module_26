@@ -6,7 +6,7 @@ using System;
 
 namespace Develop.Characters
 {
-    public class Character : MonoBehaviour, IMovable, IJumpable, ITransformable, IKIllable
+    public class Character : MonoBehaviour, IMovable, IJumpable, ITransformable, IKillable
     {
         public event Action Died;
 

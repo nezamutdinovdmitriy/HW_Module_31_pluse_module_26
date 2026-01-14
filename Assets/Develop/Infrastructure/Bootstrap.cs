@@ -12,9 +12,13 @@ namespace Develop.Infrastructure
         [SerializeField] private Character _enemy;
         [SerializeField] private Transform[] _patrolPoints;
 
+        [SerializeField] private Collider2D _levelBounds;
+
         private ControllersFactory _controllersFactory;
 
         private ControllerUpdateService _controllerUpdateService;
+
+        private GameMode _gameMode;
 
         private void Awake()
         {
@@ -22,19 +26,21 @@ namespace Develop.Infrastructure
             _controllerUpdateService = new ControllerUpdateService();
 
             CompositeController mainHeroController = _controllersFactory.CreateMainHeroController(_character, _character);
-
-            PatrolController patrolController = new PatrolController(_enemy, 0.5f, _patrolPoints);
+            PatrolController patrolController = _controllersFactory.CreatePatrolController(_enemy, 0.5f, _patrolPoints);
 
             mainHeroController.Enable();
             patrolController.Enable();
 
             _controllerUpdateService.Add(mainHeroController);
             _controllerUpdateService.Add(patrolController);
+
+            _gameMode = new GameMode(_character, _levelBounds, this);
         }
 
         private void Update()
         {
             _controllerUpdateService?.Update(Time.deltaTime);
+            _gameMode?.Update(Time.deltaTime);
         }
     }
 }

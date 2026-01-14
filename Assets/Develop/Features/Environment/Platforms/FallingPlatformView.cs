@@ -1,4 +1,3 @@
-using System.Collections;
 using UnityEngine;
 
 namespace Develop.Features.Environment
@@ -13,11 +12,10 @@ namespace Develop.Features.Environment
         private SpriteRenderer[] _childSpriteRenderers;
         private Color[] _originalColors;
 
-        private void OnEnable() => _platform.Collapsed += StartShake;
-        private void OnDisable() => _platform.Collapsed -= StartShake;
-
         private void Awake()
         {
+            _originalPosition = transform.localPosition;
+            
             _childSpriteRenderers = GetComponentsInChildren<SpriteRenderer>();
             _originalColors = new Color[_childSpriteRenderers.Length];
 
@@ -25,36 +23,32 @@ namespace Develop.Features.Environment
                 _originalColors[i] = _childSpriteRenderers[i].color;
         }
 
-        private void StartShake(float duration)
+        private void OnEnable()
         {
-            _originalPosition = transform.localPosition;
-            StartCoroutine(DestroyProcess(duration));
+            _platform.StabilityChanged += OnStabilityChanged;
+            _platform.Collapsed += OnCollapsed;
+        }
+        private void OnDisable()
+        {
+            _platform.StabilityChanged -= OnStabilityChanged;
+            _platform.Collapsed -= OnCollapsed;
         }
 
-        private IEnumerator DestroyProcess(float duration)
+        private void OnCollapsed() => transform.localPosition = _originalPosition;
+
+        private void OnStabilityChanged(float progress)
         {
-            float elapsed = 0f;
+            float lerpProgress = 1f - progress;
 
-            while (elapsed < duration)
-            {
-                elapsed += Time.deltaTime;
+            float currentShake = _shakeAmount * lerpProgress;
+            
+            float x = Random.Range(-1f,1f) * currentShake;
+            float y = Random.Range(-1f, 1f) * currentShake;
 
-                float progress = elapsed / duration;
+            transform.localPosition = _originalPosition + new Vector2(x, y);
 
-                float currentShake = _shakeAmount * progress;
-
-                float x = Random.Range(-1f,1f) * currentShake;
-                float y = Random.Range(-1f, 1f) * currentShake;
-
-                transform.localPosition = _originalPosition + new Vector2(x, y);
-
-                for (int i = 0; i < _childSpriteRenderers.Length; i++)
-                    _childSpriteRenderers[i].color = Color.Lerp(_originalColors[i], _warningColor, progress);
-
-                yield return null;
-            }
-
-            transform.localPosition = _originalPosition;
+            for (int i = 0; i < _childSpriteRenderers.Length; i++)
+                _childSpriteRenderers[i].color = Color.Lerp(_originalColors[i], _warningColor, lerpProgress);
         }
     }
 }

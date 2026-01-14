@@ -1,6 +1,6 @@
 namespace Develop.Interfaces
 {
-    public interface IKIllable
+    public interface IKillable
     {
         public bool IsDied { get; }
         public void Kill();

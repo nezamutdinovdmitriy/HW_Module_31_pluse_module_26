@@ -1,33 +1,44 @@
 using Develop.Characters;
 using System;
-using System.Collections;
 using UnityEngine;
 
 namespace Develop.Features.Environment
 {
     public class FallingPlatform : MonoBehaviour
     {
-        public event Action<float> Collapsed;
+        public event Action Collapsed;
+        public event Action<float> StabilityChanged;
 
-        [SerializeField] private float _fallDelay = 1.5f;
+        [SerializeField] private float _maxStability = 100f;
+        [SerializeField] private float _wearSpeed = 50f;
 
-        private bool _isProcessing;
+        private float _currentStability;
+        private bool _isCollapsed;
 
-        private void OnCollisionEnter2D(Collision2D collision)
+        private void Awake()
         {
-            if (_isProcessing == false && collision.gameObject.GetComponent<Character>())
-                StartCoroutine(ProcessFall());
+            _currentStability = _maxStability;
         }
 
-        private IEnumerator ProcessFall()
+        private void OnCollisionStay2D(Collision2D collision)
         {
-            _isProcessing = true;
+            if (_isCollapsed)
+                return;
 
-            Collapsed?.Invoke(_fallDelay);
+            if (collision.gameObject.GetComponent<Character>())
+            {
+                _currentStability -= _wearSpeed * Time.deltaTime;
 
-            yield return new WaitForSeconds(_fallDelay);
+                float progress = Mathf.Clamp01(_currentStability / _maxStability);
+                
+                StabilityChanged?.Invoke(progress);
 
-            Destroy(gameObject);
+                if(_currentStability <= 0)
+                {
+                    Collapsed?.Invoke();
+                    Destroy(gameObject);
+                }
+            }
         }
     }
 }

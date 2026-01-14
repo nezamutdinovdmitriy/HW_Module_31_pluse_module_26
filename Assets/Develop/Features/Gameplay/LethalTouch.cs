@@ -7,7 +7,7 @@ namespace Develop.Features.Gameplay
     {
         private void OnTriggerEnter2D(Collider2D collision)
         {
-            if (collision.TryGetComponent<IKIllable>(out IKIllable kIllable))
+            if (collision.TryGetComponent<IKillable>(out IKillable kIllable))
                 kIllable.Kill();
         }
     }

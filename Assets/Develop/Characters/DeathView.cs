@@ -12,6 +12,7 @@ namespace Develop.Characters
         [SerializeField] private float _deathDuration;
 
         private void OnEnable() => _character.Died += Death;
+        private void OnDisable() => _character.Died -= Death;
 
         private void Death() => StartCoroutine(DeathProcess());
 

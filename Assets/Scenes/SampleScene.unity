@@ -698,6 +698,7 @@ MonoBehaviour:
   _patrolPoints:
   - {fileID: 504286488}
   - {fileID: 295389927}
+  _levelBounds: {fileID: 1637129834}
 --- !u!1 &407522937
 GameObject:
   m_ObjectHideFlags: 0
@@ -1067,8 +1068,9 @@ GameObject:
   - component: {fileID: 453204112}
   - component: {fileID: 453204113}
   - component: {fileID: 453204114}
-  - component: {fileID: 453204115}
   - component: {fileID: 453204116}
+  - component: {fileID: 453204118}
+  - component: {fileID: 453204117}
   m_Layer: 0
   m_Name: View
   m_TagString: Untagged
@@ -1164,20 +1166,6 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &453204115
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 453204111}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 88e29e1921c473347a802b7c7ad57c18, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _character: {fileID: 16439302}
-  _animator: {fileID: 453204114}
 --- !u!114 &453204116
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1193,6 +1181,34 @@ MonoBehaviour:
   _character: {fileID: 16439302}
   _animator: {fileID: 453204114}
   _deathDuration: 2
+--- !u!114 &453204117
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 453204111}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0612cd14c6f7d54a91ffc9801237f22, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _character: {fileID: 16439302}
+  _animator: {fileID: 453204114}
+--- !u!114 &453204118
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 453204111}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8d8fd1ce6447746409369ad39c7c5cc8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _character: {fileID: 16439302}
+  _animator: {fileID: 453204114}
 --- !u!1 &467017819
 GameObject:
   m_ObjectHideFlags: 0
@@ -1440,7 +1456,7 @@ Transform:
   m_GameObject: {fileID: 519420028}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 9.776334, y: 3.2722335, z: -9.955041}
+  m_LocalPosition: {x: 9.776335, y: 3.2722335, z: -9.955041}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -6878,7 +6894,7 @@ Transform:
   m_GameObject: {fileID: 1735349939}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 9.776334, y: 3.2722335, z: -9.955041}
+  m_LocalPosition: {x: 9.776335, y: 3.2722335, z: -9.955041}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
