@@ -1,7 +1,7 @@
 using UnityEngine;
-using Utils;
+using Develop.Utils;
 
-namespace Movement
+namespace Develop.Movement
 {
     public class Jumper
     {
@@ -33,7 +33,7 @@ namespace Movement
             _wallJumpDuration = wallJumpDuration;
         }
 
-        public void Update(EnvironmentSensor sensor, float deltaTime)
+        public void Update(EnvironmentSensor sensor, Rotator rotator,float deltaTime)
         {
             if(_wallJumpTimer > 0)
                 _wallJumpTimer -= deltaTime;
@@ -48,7 +48,10 @@ namespace Movement
                 velocity.y = 0;
 
             if (isGrounded == false && isTouchingWall && velocity.y < 0)
+            {
                 velocity.y = Mathf.Max(velocity.y, -_wallSlideSpeed);
+                rotator.SetInputDirection(new Vector2(wallDirection, 0));
+            }    
 
             if(sensor.IsCeiling && velocity.y > 0)
                 velocity.y = 0;

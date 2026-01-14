@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Movement
+namespace Develop.Movement
 {
     public class Mover
     {
@@ -19,11 +19,8 @@ namespace Movement
 
         public void SetInputDirection(Vector2 horizontalInput) => _currentDirection = horizontalInput;
 
-        public void Update(bool isInputLocked)
+        public void Update()
         {
-            if (isInputLocked)
-                return;
-
             Vector2 velocity = _rigidbody.velocity;
 
             velocity.x = _currentDirection.x * _moveSpeed;

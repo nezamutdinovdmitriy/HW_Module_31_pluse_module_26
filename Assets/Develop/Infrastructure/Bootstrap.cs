@@ -1,12 +1,14 @@
-using Characters;
+using Develop.Characters;
+using Develop.Controllers;
+using Develop.Factories;
 using UnityEngine;
-using Controllers;
-using Factories;
-using Utils;
+using Develop.Utils;
 
 public class Bootstrap : MonoBehaviour
 {
     [SerializeField] private Character _character;
+    [SerializeField] private Character _enemy;
+    [SerializeField] private Transform[] _patrolPoints;
 
     private ControllersFactory _controllersFactory;
 
@@ -19,9 +21,13 @@ public class Bootstrap : MonoBehaviour
 
         CompositeController mainHeroController = _controllersFactory.CreateMainHeroController(_character, _character);
 
+        PatrolController patrolController = new PatrolController(_enemy, 0.5f, _patrolPoints);
+
         mainHeroController.Enable();
+        patrolController.Enable();
 
         _controllerUpdateService.Add(mainHeroController);
+        _controllerUpdateService.Add(patrolController);
     }
 
     private void Update()

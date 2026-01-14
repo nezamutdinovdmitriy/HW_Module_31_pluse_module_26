@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Movement
+namespace Develop.Movement
 {
     public class Rotator
     {

@@ -1,11 +1,11 @@
-using Interfaces;
-using Movement;
+using Develop.Interfaces;
+using Develop.Movement;
 using UnityEngine;
-using Utils;
+using Develop.Utils;
 
-namespace Characters
+namespace Develop.Characters
 {
-    public class Character : MonoBehaviour, IMovable, IJumpable
+    public class Character : MonoBehaviour, IMovable, IJumpable, ITransformable
     {
         [SerializeField] private Rigidbody2D _rigidbody;
 
@@ -32,6 +32,8 @@ namespace Characters
         public bool IsGrounded => _sensor.IsGrounded;
         public bool IsInputLocked => _jumper.IsInputLocked;
 
+        public Transform Transform => transform;
+
         private void Awake()
         {
             _mover = new Mover(_rigidbody, _moveSpeed);
@@ -42,8 +44,11 @@ namespace Characters
 
         private void Update()
         {
-            _jumper.Update(_sensor, Time.deltaTime);
-            _mover.Update(IsInputLocked);
+            _jumper.Update(_sensor, _rotator, Time.deltaTime);
+
+            if (IsInputLocked == false)
+                _mover.Update();
+
             _rotator.Update();
         }
 

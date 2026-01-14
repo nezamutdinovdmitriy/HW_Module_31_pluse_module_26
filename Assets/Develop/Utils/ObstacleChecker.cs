@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Utils
+namespace Develop.Utils
 {
     public class ObstacleChecker : MonoBehaviour
     {

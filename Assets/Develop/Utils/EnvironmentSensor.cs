@@ -1,4 +1,4 @@
-namespace Utils
+namespace Develop.Utils
 {
     public class EnvironmentSensor
     {

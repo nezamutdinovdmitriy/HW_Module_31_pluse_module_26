@@ -1,4 +1,4 @@
-namespace Interfaces
+namespace Develop.Interfaces
 {
     public interface IJumpable
     {

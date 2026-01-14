@@ -1,7 +1,7 @@
 using UnityEngine;
-using Interfaces;
+using Develop.Interfaces;
 
-namespace Controllers
+namespace Develop.Controllers
 {
     public class PlayerMovementController : Controller
     {
@@ -15,11 +15,8 @@ namespace Controllers
 
         protected override void UpdateLogic(float deltaTime)
         {
-            if(_movable.IsInputLocked == false)
-            {
-                float xInput = Input.GetAxisRaw(HorizontalAxisName);
-                _movable.Move(new Vector2(xInput, 0));
-            }
+            float xInput = Input.GetAxisRaw(HorizontalAxisName);
+            _movable.Move(new Vector2(xInput, 0));
         }
     }
 }
