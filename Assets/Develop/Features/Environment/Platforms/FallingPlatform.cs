@@ -3,7 +3,7 @@ using System;
 using System.Collections;
 using UnityEngine;
 
-namespace Features.Platforms
+namespace Develop.Features.Environment
 {
     public class FallingPlatform : MonoBehaviour
     {

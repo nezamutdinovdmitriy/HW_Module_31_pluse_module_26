@@ -2,11 +2,14 @@ using Develop.Interfaces;
 using Develop.Movement;
 using UnityEngine;
 using Develop.Utils;
+using System;
 
 namespace Develop.Characters
 {
-    public class Character : MonoBehaviour, IMovable, IJumpable, ITransformable
+    public class Character : MonoBehaviour, IMovable, IJumpable, ITransformable, IKIllable
     {
+        public event Action Died;
+
         [SerializeField] private Rigidbody2D _rigidbody;
 
         [SerializeField] private ObstacleChecker _groundChecker;
@@ -27,12 +30,16 @@ namespace Develop.Characters
         private Jumper _jumper;
         private EnvironmentSensor _sensor;
 
+        private bool _isDied;
+
         public Vector2 Velocity => _rigidbody.velocity;
         public bool IsSlideWall => _sensor.IsTouchingWall(out int direction);
         public bool IsGrounded => _sensor.IsGrounded;
         public bool IsInputLocked => _jumper.IsInputLocked;
 
         public Transform Transform => transform;
+        
+        public bool IsDied => _isDied;
 
         private void Awake()
         {
@@ -44,6 +51,9 @@ namespace Develop.Characters
 
         private void Update()
         {
+            if (_isDied)
+                return;
+
             _jumper.Update(_sensor, _rotator, Time.deltaTime);
 
             if (IsInputLocked == false)
@@ -59,5 +69,18 @@ namespace Develop.Characters
         }
 
         public void Jump() => _jumper.Jump(_sensor, _rotator);
+
+        public void Kill()
+        {
+            if (_isDied == true)
+                return;
+
+            _isDied = true;
+
+            _rigidbody.velocity = Vector2.zero;
+            _rigidbody.angularVelocity = 0f;
+
+            Died?.Invoke();
+        }
     }
 }
