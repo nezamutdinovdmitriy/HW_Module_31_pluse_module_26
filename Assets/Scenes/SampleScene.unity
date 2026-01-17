@@ -239,7 +239,7 @@ MonoBehaviour:
   _ceilChecker: {fileID: 1012480940}
   _leftWallChecker: {fileID: 1404075330}
   _rightWallChecker: {fileID: 1770604066}
-  _moveSpeed: 9
+  _moveSpeed: 10
   _yVelocityForJump: 25
   _gravityModifier: 80
   _wallSlideSpeed: 2
